@@ -150,7 +150,7 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
     }
 
     // handle interrupt events
-    @objc 
+    @objc
     func handleAudioSessionInterruption(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
             let interruptionType = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt else {
@@ -159,10 +159,10 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
 
         switch interruptionType {
         case AVAudioSession.InterruptionType.began.rawValue:
-            pauseRecorder { _ in } rejecter: { _, _, _ in }
+//             pauseRecorder { _ in } rejecter: { _, _, _ in }
             break
         case AVAudioSession.InterruptionType.ended.rawValue:
-            resumeRecorder { _ in } rejecter: { _, _, _ in }
+//             resumeRecorder { _ in } rejecter: { _, _, _ in }
             break
         default:
             break
@@ -283,7 +283,8 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
         audioSession = AVAudioSession.sharedInstance()
 
         do {
-            try audioSession.setCategory(.playAndRecord, mode: avMode, options: [AVAudioSession.CategoryOptions.defaultToSpeaker, AVAudioSession.CategoryOptions.allowBluetooth])
+            try audioSession.setCategory(.playAndRecord, mode: avMode, options: [.duckOthers, .mixWithOthers, .defaultToSpeaker, .allowBluetooth])
+
             try audioSession.setActive(true)
 
             audioSession.requestRecordPermission { granted in
@@ -385,7 +386,7 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
         audioPlayer.play()
         resolve(audioFileURL?.absoluteString)
     }
-    
+
     @objc
     public func playerDidFinishPlaying(notification: Notification) {
         if let playerItem = notification.object as? AVPlayerItem {
